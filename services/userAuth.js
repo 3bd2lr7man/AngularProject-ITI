@@ -6,7 +6,7 @@ const asyncHandler = require("express-async-handler");
 const ApiError = require("../utiles/apiError");
 //Func To genrate token
 const creatToken = (id, role) => {
-  const token = jwt.sign({ UserId: id, Role: role }, process.env.secretT, {
+  const token = jwt.sign({ UserId: id, Role: role }, "asccasdcdzcdc", {
     expiresIn: "90d",
   });
   return token;
@@ -55,8 +55,6 @@ const login = asyncHandler(async (req, res, next) => {
       `${req.body.password}`,
       userData.password
     );
-    console.log(userData, req.body._id, isPasswordValid, req.body.password);
-
     if (isPasswordValid) {
       res.status(200).json({
         status: "success",
