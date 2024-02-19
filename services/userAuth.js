@@ -6,7 +6,7 @@ const asyncHandler = require("express-async-handler");
 const ApiError = require("../utiles/apiError");
 //Func To genrate token
 const creatToken = (id, role) => {
-  const token = jwt.sign({ UserId: id, Role: role }, process.env.secretT, {
+  const token = jwt.sign({ UserId: id, Role: role }, "90d", {
     expiresIn: process.env.expiresIn,
   });
   return token;
