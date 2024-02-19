@@ -18,6 +18,11 @@ app.use(express.json());
 app.use(morgan("dev"));
 DB();
 //
+app.use("/", (req, res) => {
+  return res.status(200).json({
+    message: "صباحو يرجالة السيرفر شغال تمام ولعو الدنيا",
+  });
+});
 //
 app.use("/api/v1/users", userRouter);
 //
@@ -32,11 +37,7 @@ app.use("/api/v1/brands", brandRoute);
 app.all("*", (req, res, next) => {
   next(new ApiError(`cant find this route: ${req.originalUrl}`, 404));
 });
-app.use("/", (req, res) => {
-  return res.status(200).json({
-    message: "abdo Iam running dont worry",
-  });
-});
+
 app.use(globalError);
 
 const port = process.env.PORT;
