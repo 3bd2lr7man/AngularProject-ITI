@@ -18,6 +18,12 @@ app.use(express.json());
 app.use(morgan("dev"));
 DB();
 //
+app.use("/", (req, res) => {
+  return res.status(200).json({
+    message: "abdo Iam running dont worry",
+  });
+});
+//
 app.use("/api/v1/users", userRouter);
 //
 app.use("/api/v1/admin", adminRouter);
