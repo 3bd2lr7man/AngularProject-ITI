@@ -27,10 +27,9 @@ const userSchema = new mongoose.Schema(
       type: Date,
     },
     password: { type: String, required: true, minlengthe: 3 },
-    // createdAt: {
-    //   type: Date,
-    //   default: Date.now,
-    // },
+    passwordResetCode: String,
+    passwordResetCodeExp: Date,
+    passwordResetCodeVerified: Boolean,
     profilePicture: {
       type: String,
       default: "",

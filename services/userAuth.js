@@ -1,9 +1,11 @@
+const crypto = require("crypto");
 const userModel = require("../models/Usermodel");
 const bcryprt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const ApiErorr = require("../utiles/apiError");
 const asyncHandler = require("express-async-handler");
 const ApiError = require("../utiles/apiError");
+const sendEmail = require("../utiles/sendEmail");
 //Func To genrate token
 const creatToken = (id, role) => {
   const token = jwt.sign({ UserId: id, Role: role }, "asccasdcdzcdc", {
@@ -71,6 +73,31 @@ const login = asyncHandler(async (req, res, next) => {
   }
 });
 
+const fPassword = asyncHandler(async (req, res, next) => {
+  let userData = await userModel.findOne({ email: req.body.email });
+  if (userData) {
+    const resetCode = (
+      Math.floor(Math.random() * (999999 - 100000 + 1)) + 100000
+    ).toString();
+    const hashedResetCode = crypto
+      .createHash("sha256")
+      .update(resetCode)
+      .digest("hex");
+
+    userData.passwordResetCode = hashedResetCode;
+    userData.passwordResetCodeExp = Date.now() + 5 * 60 * 1000;
+    userData.passwordResetCodeVerified = false;
+    userData.save();
+    //send via email
+    await sendEmail({
+      subject: "Your password reset code valid for 10m",
+      message: `hi ${userData.name} Your reset Code is ${resetCode}`,
+    });
+  } else {
+    return next(new ApiErorr("there is no user with this email!"));
+  }
+});
+
 const protect = asyncHandler(async (req, res, next) => {
   let token;
   if (
@@ -108,4 +135,4 @@ const adminAuthoriz = asyncHandler(async (req, res, next) => {
   next();
 });
 
-module.exports = { signUp, login, protect, adminAuthoriz };
+module.exports = { signUp, login, fPassword, protect, adminAuthoriz };

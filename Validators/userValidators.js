@@ -32,4 +32,13 @@ const findOneValidator = [
   check("id").isMongoId().withMessage("Invalid ID"),
   validatorMiddleware,
 ];
-module.exports = { getSignupValidator, loginValidator, findOneValidator };
+const fPasswordVlid = [
+  check("email").isEmail().withMessage("Invalid email address."),
+  validatorMiddleware,
+];
+module.exports = {
+  getSignupValidator,
+  loginValidator,
+  fPasswordVlid,
+  findOneValidator,
+};
