@@ -3,8 +3,6 @@ const validatorMiddleware = require("../middlewares/validatorMiddleware");
 
 const getSignupValidator = [
   check("name")
-    .isAlpha()
-    .withMessage("name should only contain letters")
     .isLength({ min: 3 })
     .withMessage("Username should be at least 3 characters long."),
   check("email").isEmail().withMessage("Invalid email address."),
