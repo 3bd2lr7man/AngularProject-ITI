@@ -34,9 +34,15 @@ const fPasswordVlid = [
   check("email").isEmail().withMessage("Invalid email address."),
   validatorMiddleware,
 ];
+const fPassworedVerifyvalid = [
+  check("restCode").isLength({ min: 6, max: 6 }).isNumeric(),
+  validatorMiddleware,
+];
+
 module.exports = {
   getSignupValidator,
   loginValidator,
   fPasswordVlid,
   findOneValidator,
+  fPassworedVerifyvalid,
 };

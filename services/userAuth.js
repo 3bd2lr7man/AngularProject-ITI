@@ -74,30 +74,83 @@ const login = asyncHandler(async (req, res, next) => {
 });
 
 const fPassword = asyncHandler(async (req, res, next) => {
+  //
   let userData = await userModel.findOne({ email: req.body.email });
-  if (userData) {
-    const resetCode = (
-      Math.floor(Math.random() * (999999 - 100000 + 1)) + 100000
-    ).toString();
-    const hashedResetCode = crypto
-      .createHash("sha256")
-      .update(resetCode)
-      .digest("hex");
-
-    userData.passwordResetCode = hashedResetCode;
-    userData.passwordResetCodeExp = Date.now() + 5 * 60 * 1000;
-    userData.passwordResetCodeVerified = false;
-    userData.save();
-    //send via email
-    await sendEmail({
+  if (!userData) {
+    return next(new ApiErorr("there is no user with this email!"));
+  }
+  //
+  const resetCode = (
+    Math.floor(Math.random() * (999999 - 100000 + 1)) + 100000
+  ).toString();
+  const hashedResetCode = crypto
+    .createHash("sha256")
+    .update(resetCode)
+    .digest("hex");
+  //
+  userData.passwordResetCode = hashedResetCode;
+  userData.passwordResetCodeExp = Date.now() + 5 * 60 * 1000;
+  userData.passwordResetCodeVerified = false;
+  userData.save();
+  //send via email
+  try {
+    sendEmail({
+      to: userData.email,
       subject: "Your password reset code valid for 10m",
       message: `hi ${userData.name} Your reset Code is ${resetCode}`,
     });
-  } else {
-    return next(new ApiErorr("there is no user with this email!"));
+    res.status(200).json({
+      status: "success",
+      message: "status code sent to email",
+    });
+  } catch (err) {
+    userData.passwordResetCode = undefined;
+    userData.passwordResetCodeExp = undefined;
+    userData.passwordResetCodeVerified = undefined;
+    await userData.save();
+    return next(new ApiErorr("there is an error while sending email", 500)); //not working?????
   }
+  //
 });
-
+const fPassworedVerify = asyncHandler(async (req, res, next) => {
+  const hashedResetCode = crypto
+    .createHash("sha256")
+    .update(req.body.restCode)
+    .digest("hex");
+  const userData = await userModel.findOne({
+    passwordResetCode: hashedResetCode,
+    passwordResetCodeExp: { $gt: Date.now() },
+  });
+  if (!userData) {
+    return next(new ApiErorr("rest code invalid or expired", 400));
+  }
+  userData.passwordResetCodeVerified = true;
+  await userData.save();
+  res.status(200).json({
+    status: "success",
+    message: "verified",
+  });
+});
+const restPasswordForF = asyncHandler(async (req, res, next) => {
+  let userData = await userModel.findOne({ email: req.body.email });
+  if (!userData) {
+    return next(new ApiError("there is no acc for this mail", 404));
+  }
+  if (!userData.passwordResetCodeVerified) {
+    console.log(userData.passwordResetCodeVerified);
+    return next(new ApiError("rest code not verifeid", 400));
+  }
+  const hashedNewPass = await bcryprt.hash(req.body.password, 7);
+  userData.passwordResetCode = undefined;
+  userData.passwordResetCodeExp = undefined;
+  userData.passwordResetCodeVerified = undefined;
+  userData.password = hashedNewPass;
+  userData.save();
+  res.status(200).json({
+    status: "success",
+    message: "password rest successfuly",
+  });
+});
 const protect = asyncHandler(async (req, res, next) => {
   let token;
   if (
@@ -135,4 +188,12 @@ const adminAuthoriz = asyncHandler(async (req, res, next) => {
   next();
 });
 
-module.exports = { signUp, login, fPassword, protect, adminAuthoriz };
+module.exports = {
+  signUp,
+  login,
+  fPassword,
+  protect,
+  adminAuthoriz,
+  fPassworedVerify,
+  restPasswordForF,
+};
