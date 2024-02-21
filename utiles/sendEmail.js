@@ -52,6 +52,7 @@
 
 nodemailer = require("nodemailer");
 const { google } = require("googleapis");
+const { oauth2 } = require("googleapis/build/src/apis/oauth2");
 const clintId =
   "265603483745-tb9esfr1kosa3mamlll1sojp044kla9p.apps.googleusercontent.com";
 const clintSecrt = "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";
@@ -62,4 +63,15 @@ const oAuth2 = google.auth.oAuth2;
 const oAuth2_clint = new oAuth2(clintId, clintSecrt);
 oAuth2_clint.setCredentials({ refresh_token: refresh_Token });
 
-const sendEmail = (options) => {};
+const sendEmail = (options) => {
+  const accsessToken = oAuth2_clint.getAccsessToken();
+  const transporter = nodemailer.createTransport({
+    service: "google",
+    auth: {
+      type: "OAuth2",
+      user: "",
+      clintId: "",
+      clintSecrt: "",
+    },
+  });
+};
