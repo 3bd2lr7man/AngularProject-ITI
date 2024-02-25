@@ -1,5 +1,15 @@
 const productModel = require("../models/productModel");
 const factory = require("./handlerFactory");
+
+exports.createFilterObj = (req, res, next) => {
+  let filterObject = {};
+  if (req.params.categoryID) {
+    filterObject = { category: req.params.categoryID };
+  }
+
+  req.filterObj = filterObject;
+  next();
+};
 // @desc  get list of products
 // @route GET /api/v1/products
 //@access  puplic

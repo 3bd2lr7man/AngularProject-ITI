@@ -11,12 +11,13 @@ const {
   createProduct,
   updateProduct,
   deleteProduct,
+  createFilterObj,
 } = require("../services/productService");
 // const authService = require("../services/authService");
 
 const router = express.Router({ mergeParams: true });
 
-router.route("/").get(getProducts).post(
+router.route("/").get(createFilterObj, getProducts).post(
   // authService.protect,
   // authService.allowedTo("admin", "seller"),
   createProductValidator,
