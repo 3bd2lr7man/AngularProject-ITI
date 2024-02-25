@@ -1,5 +1,6 @@
 const subCategoryModel = require("../models/subCategoryModel");
 const factory = require("./handlerFactory");
+
 exports.setCategoryIdToBody = (req, res, next) => {
   if (!req.body.category) req.body.category = req.params.categoryID;
   next();

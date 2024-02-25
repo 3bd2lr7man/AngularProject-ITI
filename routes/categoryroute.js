@@ -13,12 +13,13 @@ const {
   deletecategory,
 } = require("../services/categoryservice");
 const userAuth = require("../services/userAuth");
-const subCategoriesRoute = require("./subCategoryRoute");
+
+const productRoute = require("./productRoute");
 // const authService = require("../services/authService");
 
 const router = express.Router();
 
-router.use("/:categoryID/subcategories", subCategoriesRoute);
+router.use("/:categoryID/products", productRoute);
 
 router.route("/").get(getcategories).post(
   // authService.protect,
