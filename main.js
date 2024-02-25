@@ -12,6 +12,7 @@ const globalError = require("./middlewares/errorMiddleware");
 const categoryroute = require("./routes/categoryroute");
 const subCategoryRoute = require("./routes/subCategoryRoute");
 const brandRoute = require("./routes/brandroute");
+const productRoute = require("./routes/productRoute");
 
 const DB = require("./dbConn");
 app.use(express.json());
@@ -29,6 +30,7 @@ app.use("/api/v1/subcategories", subCategoryRoute);
 //
 app.use("/api/v1/brands", brandRoute);
 //
+app.use("/api/v1/products", productRoute);
 app.all("*", (req, res, next) => {
   next(new ApiError(`cant find this route: ${req.originalUrl}`, 404));
 });
