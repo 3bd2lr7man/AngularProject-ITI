@@ -61,7 +61,17 @@ exports.createProductValidator = [
     .notEmpty()
     .withMessage("Product must be belong to a category")
     .isMongoId()
-    .withMessage("Invalid ID formate"),
+    .withMessage("Invalid ID formate")
+    .custom((categoryId) =>
+      categoryModel.findById(categoryId).then((category) => {
+        if (!category) {
+          return Promise.reject(
+            new Error(`No category for this id: ${categoryId}`)
+          );
+        }
+      })
+    ),
+
   check("subCategory")
     .optional()
     .isMongoId()
