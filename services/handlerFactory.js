@@ -42,7 +42,11 @@ exports.getOne = (model) =>
 
 exports.getAll = (model) =>
   asynchandler(async (req, res) => {
-    const document = await model.find();
+    let filter = {};
+    if (req.filterObj) {
+      filter = req.filterObj;
+    }
+    const document = await model.find(filter);
 
     res.status(200).json({ data: document });
   });

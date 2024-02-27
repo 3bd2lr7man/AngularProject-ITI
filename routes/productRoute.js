@@ -11,29 +11,33 @@ const {
   createProduct,
   updateProduct,
   deleteProduct,
+  createFilterObj,
 } = require("../services/productService");
-// const authService = require("../services/authService");
+const userAuth = require("../services/userAuth");
 
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
 
-router.route("/").get(getProducts).post(
-  // authService.protect,
-  // authService.allowedTo("admin", "seller"),
-  createProductValidator,
-  createProduct
-);
+router
+  .route("/")
+  .get(createFilterObj, getProducts)
+  .post(
+    userAuth.protect,
+    userAuth.adminAuthoriz,
+    createProductValidator,
+    createProduct
+  );
 router
   .route("/:id")
   .get(getProductValidator, getProduct)
   .put(
-    // authService.protect,
-    // authService.allowedTo("admin", "seller"),
+    userAuth.protect,
+    userAuth.adminAuthoriz,
     updateProductValidator,
     updateProduct
   )
   .delete(
-    // authService.protect,
-    // authService.allowedTo("admin"),
+    userAuth.protect,
+    userAuth.adminAuthoriz,
     deleteProductValidator,
     deleteProduct
   );
