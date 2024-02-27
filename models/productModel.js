@@ -31,7 +31,6 @@ const productSchema = new mongoose.Schema(
       type: Number,
       required: true,
       trim: true,
-      max: 200000,
     },
     priceAfterDiscount: {
       type: Number,
@@ -46,16 +45,6 @@ const productSchema = new mongoose.Schema(
       type: mongoose.Schema.ObjectId,
       ref: "category",
       required: true,
-    },
-    subCategory: [
-      {
-        type: mongoose.Schema.ObjectId,
-        ref: "subcategory",
-      },
-    ],
-    brand: {
-      type: mongoose.Schema.ObjectId,
-      ref: "brand",
     },
     ratingAvg: {
       type: Number,

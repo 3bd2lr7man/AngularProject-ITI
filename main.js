@@ -10,8 +10,6 @@ const adminRouter = require("./routes/adminRouter");
 const ApiError = require("./utiles/apiError");
 const globalError = require("./middlewares/errorMiddleware");
 const categoryroute = require("./routes/categoryroute");
-const subCategoryRoute = require("./routes/subCategoryRoute");
-const brandRoute = require("./routes/brandroute");
 const productRoute = require("./routes/productRoute");
 
 const DB = require("./dbConn");
@@ -25,10 +23,6 @@ app.use("/api/v1/users", userRouter);
 app.use("/api/v1/admin", adminRouter);
 //
 app.use("/api/v1/categories", categoryroute);
-//
-app.use("/api/v1/subcategories", subCategoryRoute);
-//
-app.use("/api/v1/brands", brandRoute);
 //
 app.use("/api/v1/products", productRoute);
 app.all("*", (req, res, next) => {

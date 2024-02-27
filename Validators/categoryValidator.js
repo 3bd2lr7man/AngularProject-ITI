@@ -1,9 +1,7 @@
 const slugify = require("slugify");
-//check => check any thing in params or body instead of write body("id") or param("id")
 const { check, body } = require("express-validator");
 const validatorMiddleware = require("../middlewares/validatorMiddleware");
 
-//aray of rules
 exports.getCategoryValidator = [
   check("id").isMongoId().withMessage("invalid category id"),
   validatorMiddleware,

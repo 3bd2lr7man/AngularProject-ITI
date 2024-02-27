@@ -2,7 +2,6 @@ const slugify = require("slugify");
 const { check, body } = require("express-validator");
 const validatorMiddleware = require("../middlewares/validatorMiddleware");
 const categoryModel = require("../models/categorymodel");
-const subCategoryModel = require("../models/subCategoryModel");
 
 exports.createProductValidator = [
   check("title")
@@ -34,7 +33,7 @@ exports.createProductValidator = [
     .withMessage("Product price is required")
     .isNumeric()
     .withMessage("Product price must be a number")
-    .isLength({ max: 32 })
+    .isLength({ max: 15 })
     .withMessage("To long price"),
   check("priceAfterDiscount")
     .optional()
@@ -71,40 +70,6 @@ exports.createProductValidator = [
         }
       })
     ),
-
-  check("subCategory")
-    .optional()
-    .isMongoId()
-    .withMessage("Invalid ID formate")
-    .custom((subcategoriesIds) =>
-      subCategoryModel
-        .find({ _id: { $exists: true, $in: subcategoriesIds } })
-        .then((result) => {
-          if (result.length < 1 || result.length !== subcategoriesIds.length) {
-            return Promise.reject(new Error(`Invalid subcategories Ids`));
-          }
-        })
-    )
-    .custom((val, { req }) =>
-      subCategoryModel
-        .find({ category: req.body.category })
-        .then((subcategories) => {
-          const subCategoriesIdsInDB = [];
-          // eslint-disable-next-line no-shadow
-          subcategories.forEach((subCategoryModel) => {
-            subCategoriesIdsInDB.push(subCategoryModel._id.toString());
-          });
-          // check if subcategories ids in db include subcategories in req.body (true)
-          const checker = (target, arr) => target.every((v) => arr.includes(v));
-          if (!checker(val, subCategoriesIdsInDB)) {
-            return Promise.reject(
-              new Error(`subcategories not belong to category`)
-            );
-          }
-        })
-    ),
-
-  check("brand").optional().isMongoId().withMessage("Invalid ID formate"),
   check("ratingAvg")
     .optional()
     .isNumeric()
