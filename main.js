@@ -19,7 +19,8 @@ app.use(express.json());
 app.use(morgan("dev"));
 DB();
 //
-
+app.use(express.static("uploads"));
+//
 app.use("/api/v1/users", userRouter);
 //
 app.use("/api/v1/admin", adminRouter);

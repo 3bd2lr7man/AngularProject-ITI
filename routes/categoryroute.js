@@ -1,4 +1,5 @@
 const express = require("express");
+const multerConf = require("../middlewares/multer");
 const {
   getCategoryValidator,
   createCategoryValidator,
@@ -26,6 +27,7 @@ router.route("/").get(getcategories).post(
   // authService.allowedTo("admin", "seller"),
   userAuth.protect,
   userAuth.adminAuthoriz,
+  multerConf,
   createCategoryValidator,
   createcategory
 );
