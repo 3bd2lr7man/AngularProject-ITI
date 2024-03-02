@@ -62,6 +62,8 @@ const login = asyncHandler(async (req, res, next) => {
         status: "success",
         message: `Welcome back ${userData.name}`,
         token: creatToken(userData._id, userData.role),
+        role: userData.role,
+        userName: userData.name,
       });
     } else {
       return next(new ApiError("Invalid email or password", 401));
